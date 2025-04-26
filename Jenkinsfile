@@ -19,13 +19,13 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Stop and remove previous container if exists (Windows way)
-                    bat '''
-                        docker ps -q --filter "name=my-chat-app-container" | findstr . && (
-                            docker stop my-chat-app-container
-                            docker rm my-chat-app-container
+                    // Stop and remove previous container if it exists
+                    bat """
+                        FOR /F "tokens=*" %%i IN ('docker ps -q --filter "name=chat-app-container"') DO (
+                            docker stop chat-app-container
+                            docker rm chat-app-container
                         )
-                    '''
+                    """
 
                     // Run new container
                     bat 'docker run -d -p 8000:8000 --name chat-app-container ichat-app'
