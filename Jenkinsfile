@@ -2,16 +2,25 @@ pipeline {
     agent any
 
     stages {
+        stage('Declarative: Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Clone Code') {
             steps {
-                echo 'Code is already present locally. Skipping clone...'
+                script {
+                    echo 'Code is already present locally. Skipping clone...'
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    def dockerImage = docker.build('ichat-app')
+                    echo 'Building Docker image...'
+                    bat 'docker build -t "ichat-app" .'
                 }
             }
         }
@@ -19,27 +28,34 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Proper multi-line bat block with escaping
+                    echo 'Stopping and removing existing container if it exists...'
                     bat '''
-                    for /f "tokens=*" %%i in ('docker ps -q --filter "name=chat-app-container"') do (
-                        docker stop chat-app-container
-                        docker rm chat-app-container
-                    )
+                        for /F "tokens=*" %%i in ('docker ps -q --filter "name=ichat-app"') do (
+                            docker stop %%i
+                            docker rm %%i
+                        )
                     '''
+                    echo 'Running new Docker container...'
+                    bat 'docker run -d --name ichat-app -p 3000:3000 ichat-app'
+                }
+            }
+        }
 
-                    // Run the new container
-                    bat 'docker run -d -p 8000:8000 --name chat-app-container ichat-app'
+        stage('Declarative: Post Actions') {
+            steps {
+                script {
+                    echo 'Build or deploy failed!'
                 }
             }
         }
     }
 
     post {
-        success {
-            echo 'Chat app deployed successfully!'
-        }
         failure {
-            echo 'Build or deploy failed!'
+            echo 'Build failed!'
+        }
+        success {
+            echo 'Build succeeded!'
         }
     }
 }
