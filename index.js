@@ -1,12 +1,3 @@
-// Node server which will handle socket io connections:
-// const express=require("express");
-// const app=express();
-
-// const http=require("http").createServer(app);
-// const io=require("socket.io")(http);
-// app.get("/",(req,res)=>{
-//     res.sendFile(__dirname + "/index.html");
-// })
 const express = require("express");
 const app = express();
 const path = require("path"); // Add this line
