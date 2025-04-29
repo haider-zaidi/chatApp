@@ -3,7 +3,6 @@ pipeline {
     environment {
         DOCKER_HUB_CREDENTIALS = 'docker-hub-credentials'  // Jenkins credentials ID for Docker Hub
         GITHUB_CREDENTIALS = 'github-credentials'          // Jenkins credentials ID for GitHub
-        CONTAINER_NAME='ichat-app'
         DOCKER_IMAGE_NAME = 'haiderzaidi123/ichat-app'
     }
     stages {
@@ -34,15 +33,13 @@ pipeline {
                 }
             }
         }
-        stage('Running a container') {
+        stage('Run Docker Container') {
             steps {
-                script {
-                    bat '''
-                    docker stop %CONTAINER_NAME% || exit 0
-                    docker rm %CONTAINER_NAME% || exit 0
-                    docker run -d -p 8000:8000 --name %CONTAINER_NAME% %DOCKER_IMAGE_NAME%
+                bat '''
+                    docker stop ichat-app-container || true
+                    docker rm ichat-app-container || true
+                    docker run -d -p 3000:3000 --name ichat-app-container haiderzaidi123/ichat-app
                 '''
-                }
             }
         }
     }
