@@ -4,6 +4,7 @@ pipeline {
         DOCKER_HUB_CREDENTIALS = 'docker-hub-credentials'  // Jenkins credentials ID for Docker Hub
         GITHUB_CREDENTIALS = 'github-credentials'          // Jenkins credentials ID for GitHub
         DOCKER_IMAGE_NAME = 'haiderzaidi123/ichat-app'
+        DOCKER_CONTAINER='ichat-app'
     }
     stages {
         stage('Checkout Code') {
