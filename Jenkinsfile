@@ -33,15 +33,6 @@ pipeline {
                 }
             }
         }
-        stage('Run Docker Container') {
-            steps {
-                bat '''
-                    docker stop ichat-app-container || true
-                    docker rm ichat-app-container || true
-                    docker run -d -p 3000:3000 --name ichat-app-container haiderzaidi123/ichat-app
-                '''
-            }
-        }
     }
     post {
         always {
